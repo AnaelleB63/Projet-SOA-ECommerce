@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SOA E-Commerce</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #dde5d7;
+        padding: 40px;
+        color: #5a7310;
+      }
+      h1,
+      h2 {
+        text-align: center;
+      }
+
+      .search-box {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 40px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      select {
+        padding: 10px;
+        width: 60%;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      #search-result {
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #3498db;
+      }
+
+      .catalog {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+      .price {
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 22px;
+        margin: 15px 0;
+      }
+
+      button {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        background: #3498db;
+      }
+      button:hover {
+        background: #2980b9;
+      }
+      button:disabled {
+        background: #e74c3c;
+        cursor: not-allowed;
+      }
+
+      #status-container {
+        max-width: 900px;
+        margin: 30px auto 0;
+      }
+      #status {
+        font-size: 14px;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center; margin-bottom: -10px">
+      <img
+        src="/static/logo.png"
+        alt="Logo Turtle Shop"
+        style="width: 150px; height: auto"
+      />
+    </div>
+    <h1 style="margin-top: 10px">Turtle Shop</h1>
+
+    <div class="search-box">
+      <h2>Rechercher un produit</h2>
+      <select id="product-search" onchange="afficherStockRecherche()">
+        <option value="">-- Sélectionnez un produit --</option>
+      </select>
+      <div id="search-result"></div>
+    </div>
+
+    <div class="catalog" id="catalog-container"></div>
+
+    <div id="status-container"><div id="status"></div></div>
+
+    <script>
+      let baseDeDonnees = {}; 
+
+      window.onload = async function () {
+        chargerCatalogue();
+      };
+
+      async function chargerCatalogue() {
+        const res = await fetch("/catalog");
+        baseDeDonnees = await res.json();
+
+        construireInterface();
+      }
+
+      function construireInterface() {
+        const selectMenu = document.getElementById("product-search");
+        const catalogDiv = document.getElementById("catalog-container");
+
+        selectMenu.innerHTML =
+          '<option value="">-- Sélectionnez un produit --</option>';
+        catalogDiv.innerHTML = "";
+
+        for (const [id, details] of Object.entries(baseDeDonnees)) {
+          const option = document.createElement("option");
+          option.value = id;
+          option.text = `${details.name} (${id})`;
+          selectMenu.appendChild(option);
+
+          let isEpuise = details.stock <= 0;
+          let btnHTML = isEpuise
+            ? `<button disabled>Épuisé</button>`
+            : `<button onclick="passerCommande('${id}', ${details.price})">Acheter</button>`;
+
+          catalogDiv.innerHTML += `
+            <div class="card">
+                <img src="${details.image}" alt="${details.name}" style="height: 80px; width: auto; object-fit: contain; margin-bottom: 15px;">
+        
+                <h3>${details.name}</h3>
+                <p style="font-size:12px; color:#7f8c8d;">Réf: ${id}</p>
+                <p style="font-size:14px; color:#27ae60;">Stock actuel : <b>${details.stock}</b></p>
+                <div class="price">${details.price} $</div>
+                ${btnHTML}
+            </div>
+        `;
+        }
+      }
+
+      function afficherStockRecherche() {
+        const id = document.getElementById("product-search").value;
+        const resDiv = document.getElementById("search-result");
+
+        if (id && baseDeDonnees[id]) {
+          const stock = baseDeDonnees[id].stock;
+          if (stock > 0) {
+            resDiv.style.color = "#27ae60";
+            resDiv.innerHTML = `✅ Il reste ${stock} unité(s) de ce produit.`;
+          } else {
+            resDiv.style.color = "#e74c3c";
+            resDiv.innerHTML = `❌ Ce produit est en rupture de stock.`;
+          }
+        } else {
+          resDiv.innerHTML = "";
+        }
+      }
+
+      async function passerCommande(id, prix) {
+        const statusDiv = document.getElementById("status");
+        statusDiv.style.display = "block";
+        statusDiv.className = "";
+        statusDiv.innerHTML = "Traitement...";
+
+        try {
+          const res = await fetch("/commander", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ product_id: id, amount: prix }),
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            statusDiv.className = "success";
+            statusDiv.innerHTML =
+              `<b>Succès !</b><br>` + data.logs.join("<br>");
+          } else {
+            statusDiv.className = "error";
+            statusDiv.innerHTML = `<b>Erreur :</b> ` + data.message;
+          }
+
+          chargerCatalogue();
+          document.getElementById("search-result").innerHTML = "";
+        } catch (error) {
+          statusDiv.className = "error";
+          statusDiv.innerHTML = "Erreur de connexion.";
+        }
+      }
+    </script>
+  </body>
+</html>

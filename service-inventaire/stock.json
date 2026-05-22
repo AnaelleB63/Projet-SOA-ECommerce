@@ -1,0 +1,56 @@
+{
+  "PROD-01" : {
+    "name" : "Casque Audio",
+    "price" : 120.5,
+    "stock" : 1,
+    "image" : "/static/casque-de-musique.png"
+  },
+  "PROD-02" : {
+    "name" : "Clavier Mécanique",
+    "price" : 85.0,
+    "stock" : 4,
+    "image" : "/static/clavier-dordinateur.png"
+  },
+  "PROD-03" : {
+    "name" : "Souris Gamer",
+    "price" : 45.0,
+    "stock" : 0,
+    "image" : "/static/souris_gamer.png"
+  },
+  "PROD-04" : {
+    "name" : "Écran 27 pouces",
+    "price" : 250.0,
+    "stock" : 8,
+    "image" : "/static/ecran.png"
+  },
+  "PROD-05" : {
+    "name" : "Microphone USB",
+    "price" : 65.99,
+    "stock" : 0,
+    "image" : "/static/microphone.png"
+  },
+  "PROD-06" : {
+    "name" : "Tapis de souris XXL",
+    "price" : 19.99,
+    "stock" : 15,
+    "image" : "/static/tapis-de-souris.png"
+  },
+  "PROD-07" : {
+    "name" : "Webcam HD 1080p",
+    "price" : 55.0,
+    "stock" : 4,
+    "image" : "/static/webcam.png"
+  },
+  "PROD-08" : {
+    "name" : "Chaise Ergonomique",
+    "price" : 189.9,
+    "stock" : 3,
+    "image" : "/static/chaise-de-bureau.png"
+  },
+  "PROD-09" : {
+    "name" : "Disque SSD 1To",
+    "price" : 95.5,
+    "stock" : 10,
+    "image" : "/static/lecteur-ssd.png"
+  }
+}
