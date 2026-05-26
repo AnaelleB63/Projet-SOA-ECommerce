@@ -12,9 +12,9 @@ Avant de lancer le projet, assurez-vous d'avoir installé :
 Pour faire fonctionner Turtle Shop, vous devez ouvrir 3 terminaux différents afin de lancer chaque microservice en parallèle.
 
 1. Terminal 1 : Le Service Inventaire (Java)
-Naviguez dans le dossier du service d'inventaire et lancez le serveur Spring Boot : //
-`cd service-inventaire //
-./mvnw spring-boot:run`//
+Naviguez dans le dossier du service d'inventaire et lancez le serveur Spring Boot : <br>
+`cd service-inventaire <br>
+./mvnw spring-boot:run`<br>
 Le service sera disponible sur : `http://localhost:8080/api/inventory/catalog`
 
 2. Terminal 2 : Le Service Paiement (Python)
