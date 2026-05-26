@@ -13,21 +13,21 @@ Pour faire fonctionner Turtle Shop, vous devez ouvrir 3 terminaux différents af
 
 1. Terminal 1 : Le Service Inventaire (Java)
 Naviguez dans le dossier du service d'inventaire et lancez le serveur Spring Boot : <br>
-`cd service-inventaire 
-./mvnw spring-boot:run`<br>
+```cd service-inventaire 
+./mvnw spring-boot:run```<br>
 Le service sera disponible sur : `http://localhost:8080/api/inventory/catalog`
 
 2. Terminal 2 : Le Service Paiement (Python)
 Naviguez dans le dossier du service de paiement et lancez l'application :<br>
-`cd service-paiement
-py app.py`<br>
+```cd service-paiement
+py app.py```<br>
 Le service simulé écoutera sur le port `5000`
 
 3. Terminal 3 : L'Orchestrateur (Python)
 Naviguez dans le dossier de l'orchestrateur, installez les dépendances requises, puis lancez le serveur web :<br>
-`cd orchestrateur
+```cd orchestrateur
 pip install -r requirements.txt
-py app_web.py`<br>
+py app_web.py```<br>
 L'interface web de la boutique sera accessible sur : `http://localhost:3000`
 
 ## Scénarios de Test à valider
